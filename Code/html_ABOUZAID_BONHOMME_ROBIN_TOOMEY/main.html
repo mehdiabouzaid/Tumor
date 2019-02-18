@@ -1,0 +1,602 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>main</title><meta name="generator" content="MATLAB 9.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-12-18"><meta name="DC.source" content="main.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">Postulat</a></li><li><a href="#3">Ajout du repertoire des donnees</a></li><li><a href="#4">Image Originale</a></li><li><a href="#5">Mask : verite terrain</a></li><li><a href="#6">Histogramme</a></li><li><a href="#7">Pre-traitement : Filtrage Gaussien</a></li><li><a href="#8">Determination du seuil avec Otsu</a></li><li><a href="#9">Segmentation (seuillage)</a></li><li><a href="#10">Image Rognee</a></li><li><a href="#11">Rogner l'image originale (retirer les colonnes et les lignes qui ne</a></li><li><a href="#12">contiennent des valeurs entre 0 et 0.1)</a></li><li><a href="#13">Pre-traitement : Filtrage Gaussien</a></li><li><a href="#14">Determination du seuil avec Otsu</a></li><li><a href="#15">Segmentation (seuillage)</a></li><li><a href="#16">Reconstruction</a></li><li><a href="#17">K-Means</a></li><li><a href="#18">Interpretation des resultats</a></li><li><a href="#19">Fonctions</a></li><li><a href="#20">afficherResultats</a></li><li><a href="#21">Recuperation de la tumeur</a></li><li><a href="#22">Isoler la tumeur</a></li><li><a href="#23">Localiser la tumeur dans l'image originale</a></li><li><a href="#24">Distance entre la tumeur dectectee et le masque</a></li><li><a href="#26">rognerImage</a></li></ul></div><h2 id="1">Postulat</h2><pre class="codeinput"><span class="comment">% Comme les mask114.png, mask121.png, mask129.png ne contiennent qu'une</span>
+<span class="comment">% seule tumeur, on suppose qu'on a qu'une seule tumeur a detecter par image</span>
+</pre><pre class="codeinput">clc
+close <span class="string">all</span>
+clear
+image = [];
+</pre><h2 id="3">Ajout du repertoire des donnees</h2><pre class="codeinput">path=which(<span class="string">'main.m'</span>);
+path=[path(1:(end-length(<span class="string">'Code/main.m'</span>))) <span class="string">'Donnees/tumeur'</span>];
+
+<span class="keyword">if</span> ~exist(path, <span class="string">'dir'</span>)
+    disp(<span class="string">'Pour des raisons de confidentialite, les images medicales ne sont pas stockees en ligne.'</span>)
+    error(<span class="string">'Creez le repertoire tumeur dans le repertoire Donnees et mettez les images dans le repertoire tumeur'</span>)
+<span class="keyword">end</span>
+
+addpath(path)
+</pre><h2 id="4">Image Originale</h2><pre class="codeinput">nomImage = <span class="string">'dcm114.png'</span>;
+
+image = im2double(imread(nomImage));
+[n,p,z] = size(image);
+
+disp([<span class="string">'Dimensions Image Originale : n='</span>, num2str(n), <span class="string">' p='</span>, num2str(p), <span class="string">' z='</span>, num2str(z)])
+
+<span class="keyword">if</span> (z&gt;1)
+    image = rgb2gray(image);
+<span class="keyword">end</span>
+
+i_subplot = 1;
+
+figure(<span class="string">'Renderer'</span>,<span class="string">'painters'</span>,<span class="string">'Position'</span>,[10 10 1600 800])
+subplot(4,4,i_subplot)
+imagesc(image)
+title([<span class="string">'Image Originale '</span> nomImage])
+i_subplot = i_subplot+1;
+</pre><pre class="codeoutput">Dimensions Image Originale : n=168 p=168 z=1
+</pre><img vspace="5" hspace="5" src="main_01.png" alt=""> <h2 id="5">Mask : verite terrain</h2><pre class="codeinput">nomMask = <span class="string">'mask114.png'</span>;
+mask = im2double(imread(nomMask)); <span class="comment">% verite terrain</span>
+
+subplot(4,4,i_subplot)
+imagesc(mask)
+title([<span class="string">'Mask '</span> nomMask <span class="string">' : verite terrain'</span>])
+i_subplot = i_subplot+1;
+</pre><img vspace="5" hspace="5" src="main_02.png" alt=""> <h2 id="6">Histogramme</h2><pre class="codeinput">subplot(4,4,i_subplot)
+h=histogram(image);
+grid <span class="string">on</span>
+title(<span class="string">'Histogramme Image Originale'</span>)
+i_subplot = i_subplot+1;
+
+<span class="comment">% On remarque que l'image originale contient enormement de pixels noirs</span>
+<span class="comment">% (arriere plan) qui peuvent fausser la determination automatique du seuil</span>
+<span class="comment">% pour le seuillage</span>
+</pre><img vspace="5" hspace="5" src="main_03.png" alt=""> <h2 id="7">Pre-traitement : Filtrage Gaussien</h2><pre class="codeinput">subplot(4,4,i_subplot)
+imageFiltrageGaussien = imgaussfilt(image);
+imagesc(image)
+title(<span class="string">'Image Originale Apres filtrage gaussien'</span>)
+i_subplot = i_subplot+1;
+</pre><img vspace="5" hspace="5" src="main_04.png" alt=""> <h2 id="8">Determination du seuil avec Otsu</h2><pre class="codeinput">seuilOtsuImageOriginale = graythresh(imageFiltrageGaussien)
+<span class="comment">% la fonction graythresh de Matlab utilise la methode d'Otsu vue en TP pour</span>
+<span class="comment">% determiner le seuil de maniere automatique</span>
+</pre><pre class="codeoutput">
+seuilOtsuImageOriginale =
+
+    0.0510
+
+</pre><h2 id="9">Segmentation (seuillage)</h2><pre class="codeinput">imageSeuillee = imbinarize(imageFiltrageGaussien, seuilOtsuImageOriginale);
+
+subplot(4,4,i_subplot)
+imagesc(imageSeuillee)
+title([<span class="string">'Apres segmentation avec Otsu, s='</span> num2str(seuilOtsuImageOriginale)])
+i_subplot = i_subplot+1;
+
+<span class="comment">% On remarque que la methode d'Otsu n'est pas satisfaisante dans notre cas</span>
+<span class="comment">% car le seuil est fausse par l'arriere plan noir. La tumeur et l'organe se</span>
+<span class="comment">% trouve alors dans la meme region et on ne pas les dissocier</span>
+</pre><img vspace="5" hspace="5" src="main_05.png" alt=""> <h2 id="10">Image Rognee</h2><h2 id="11">Rogner l'image originale (retirer les colonnes et les lignes qui ne</h2><h2 id="12">contiennent des valeurs entre 0 et 0.1)</h2><pre class="codeinput"><span class="comment">% Retirer les lignes et les colonnes qui ne contiennent que des 0 ne</span>
+<span class="comment">% suffisent pas pour avoir des resultats satisfaisants avec Otsu. C'est</span>
+<span class="comment">% pourquoi, on retire les lignes et les colonnes de l'image originale qui</span>
+<span class="comment">% ont des valeurs entre 0 et 0.1. On a choisi 0.1 de maniere empirique</span>
+
+seuilMax = 0.1;
+[imageRognee,indicesLignesNoires,indicesColonnesNoires] = rognerImage(image,seuilMax,n,p);
+
+subplot(4,4,i_subplot)
+imagesc(imageRognee);
+title(<span class="string">'Image Rognee'</span>)
+i_subplot = i_subplot+1;
+
+subplot(4,4,i_subplot)
+h=histogram(imageRognee);
+grid <span class="string">on</span>
+title(<span class="string">'Histogramme Image Rognee'</span>)
+i_subplot = i_subplot+1;
+</pre><img vspace="5" hspace="5" src="main_06.png" alt=""> <h2 id="13">Pre-traitement : Filtrage Gaussien</h2><pre class="codeinput">imageRogneeFitlrageGaussien = imgaussfilt(imageRognee);
+
+subplot(4,4,i_subplot)
+imagesc(imageRogneeFitlrageGaussien)
+title(<span class="string">'Image Rognee Apres filtrage gaussien'</span>)
+i_subplot = i_subplot+1;
+</pre><img vspace="5" hspace="5" src="main_07.png" alt=""> <h2 id="14">Determination du seuil avec Otsu</h2><pre class="codeinput">seuilOtsuImageRognee = graythresh(imageRogneeFitlrageGaussien)
+
+<span class="comment">% Le seuil trouve avec Otsu a partir de l'image rognee est tres different</span>
+<span class="comment">% de celui trouve a partir de l'image originale</span>
+</pre><pre class="codeoutput">
+seuilOtsuImageRognee =
+
+    0.3157
+
+</pre><h2 id="15">Segmentation (seuillage)</h2><pre class="codeinput">imageRogneeSeuillee = imbinarize(imageRogneeFitlrageGaussien, seuilOtsuImageRognee);
+
+subplot(4,4,i_subplot)
+imagesc(imageRogneeSeuillee)
+title([<span class="string">'Apres segmentation avec Otsu, s='</span>,num2str(seuilOtsuImageRognee)])
+i_subplot = i_subplot+1;
+
+<span class="comment">% imageRogneeSeuillee n'a pas les memes dimensions que le mask (verite</span>
+<span class="comment">% terrain) donc on peut pas utiliser la fonction dice de Matlab directement</span>
+<span class="comment">% pour calculer la similitude.</span>
+
+<span class="comment">% Nous devons alors reconstruire l'imageSeuillee a partir de l'imageRogneeSeuillee</span>
+</pre><img vspace="5" hspace="5" src="main_08.png" alt=""> <h2 id="16">Reconstruction</h2><pre class="codeinput">resOtsu = ones(size(image));
+
+<span class="keyword">for</span> j = 1:length(indicesColonnesNoires)
+    resOtsu(:,indicesColonnesNoires(j)) = 0;
+<span class="keyword">end</span>
+
+<span class="keyword">for</span> i = 1:length(indicesLignesNoires)
+    resOtsu(indicesLignesNoires(i),:) = 0;
+<span class="keyword">end</span>
+
+resOtsu(resOtsu==1) = imageRogneeSeuillee;
+
+i_subplot = afficherResultats(resOtsu,image,mask,<span class="string">'Otsu'</span>,i_subplot);
+</pre><h2 id="17">K-Means</h2><pre class="codeinput">K = 3; <span class="comment">% nombre de clusters</span>
+<span class="comment">% 3 clusters : arriere plan, organe, tumeur</span>
+
+resKmeans = reshape(kmeans(imageFiltrageGaussien(:),K),size(imageFiltrageGaussien));
+
+subplot(4,4,i_subplot)
+imagesc(resKmeans)
+title([<span class="string">'K-Means, K='</span> num2str(K)])
+i_subplot = i_subplot+1;
+
+i_subplot = afficherResultats(resKmeans,image,mask,<span class="string">'K-Means'</span>,i_subplot);
+</pre><img vspace="5" hspace="5" src="main_11.png" alt=""> <h2 id="18">Interpretation des resultats</h2><pre class="codeinput"><span class="comment">% Otsu ne donne pas de bons resultats avec l'image originale car l'arriere</span>
+<span class="comment">% plan contient trop de pixels noirs</span>
+
+<span class="comment">% Une fois qu'on a rogne l'image (retire les pixels entre 0 et 0.1 :</span>
+<span class="comment">% pixels noirs, fonces), Otsu donne de bons resultats.</span>
+
+<span class="comment">% La methode de K-Means donne de bons resultats sur l'image originale.</span>
+
+<span class="comment">% Les methodes d'Otsu sur l'image rognee et K-Means sur l'image originale</span>
+<span class="comment">% donnent les memes valeurs de similitudes pour dcm114.png (0.70175) et dcm121.png (0.8046).</span>
+<span class="comment">% Pour dcm129.png, :</span>
+<span class="comment">% - parfois K-Means donne une similitude de 0.81818, un peu plus elevee qu'Otsu (0.80597)</span>
+<span class="comment">% - parfois K-Means donne la meme similitude qu'Otsu (0.80597)</span>
+<span class="comment">% Ces similitudes qui changent pour dcm129.png sont dues a l'initialisation</span>
+<span class="comment">% des centres qui peut changer dans l'algorithme de K-Means</span>
+
+<span class="comment">% Ces similitudes sont proches de 1 donc ce sont de bons resultats.</span>
+
+<span class="comment">% Quelle que soit la methode, quelle que soit l'image, le centre de masse</span>
+<span class="comment">% de la tumeur predite et du mask ne sont pas les memes.</span>
+
+<span class="comment">% Limites du projet</span>
+<span class="comment">% Notre projet fonctionne sur les 3 images qui nous ont ete donnees mais il</span>
+<span class="comment">% pourrait ne pas fonctionner sur d'autres images</span>
+</pre><h2 id="19">Fonctions</h2><h2 id="20">afficherResultats</h2><pre class="codeinput"><span class="keyword">function</span> [i_subplot] = afficherResultats(res,image,mask,methode,i_subplot)
+</pre><h2 id="21">Recuperation de la tumeur</h2><pre class="codeinput">    <span class="comment">% Combien y a-t-il de clusters ?</span>
+    modaliteClusters = unique(res)';
+
+    <span class="comment">% Combien y a-t-il de pixels dans chaque cluster ?</span>
+    tailleClusters = zeros(length(modaliteClusters),1);
+    indice=1;
+    <span class="keyword">for</span> i = modaliteClusters
+        tailleClusters(indice) = length(res(res==i));
+        indice = indice+1;
+    <span class="keyword">end</span>
+
+    <span class="comment">% Quel cluster est le plus petit (ce cluster correspond alors a la tumeur)</span>
+    [~, indiceTailleClusterMin] = min(tailleClusters);
+</pre><h2 id="22">Isoler la tumeur</h2><pre class="codeinput">    indicesTumeur = find(res==modaliteClusters(indiceTailleClusterMin));
+    imageBinarisee = zeros(size(image));
+    imageBinarisee(indicesTumeur) = 1;
+
+    subplot(4,4,i_subplot)
+    imagesc(imageBinarisee)
+    title([<span class="string">'Isoler la tumeur, methode : '</span> methode])
+    i_subplot = i_subplot+1;
+
+    subplot(4,4,i_subplot)
+    imagesc(image)
+    hold <span class="string">on</span>
+    title([<span class="string">'Localiser la tumeur, methode : '</span> methode])
+    i_subplot = i_subplot+1;
+</pre><img vspace="5" hspace="5" src="main_09.png" alt=""> <img vspace="5" hspace="5" src="main_12.png" alt=""> <h2 id="23">Localiser la tumeur dans l'image originale</h2><pre class="codeinput">    s_predit = regionprops(bwlabel(imageBinarisee)); <span class="comment">% determine entre autres le centre de masse de la tumeur predite</span>
+
+    rectangle(<span class="string">'Position'</span>,s_predit.BoundingBox,<span class="string">'EdgeColor'</span>, <span class="string">'r'</span>,<span class="string">'LineWidth'</span>, 3)
+    hold <span class="string">off</span>
+</pre><img vspace="5" hspace="5" src="main_10.png" alt=""> <img vspace="5" hspace="5" src="main_13.png" alt=""> <h2 id="24">Distance entre la tumeur dectectee et le masque</h2><pre class="codeinput">    disp([methode <span class="string">' :'</span>])
+
+    s_mask = regionprops(bwlabel(mask)); <span class="comment">% determine entre autres le centre de masse de la tumeur du mask</span>
+    distance_s_predit_s_mask = norm(s_predit.Centroid-s_mask.Centroid,2); <span class="comment">% norme 2</span>
+    disp([<span class="string">'Distance entre le centre de masse de la tumeur predite et le centre de masse de la tumeur dans le mask : '</span> num2str(distance_s_predit_s_mask)])
+
+    similarite = dice(imageBinarisee, mask); <span class="comment">% quantifie la similarite entre deux images</span>
+    disp([<span class="string">'Similarite entre notre prediction et le mask = '</span> num2str(similarite) ])
+    fprintf(<span class="string">'\n'</span>)
+</pre><pre class="codeoutput">Otsu :
+Distance entre le centre de masse de la tumeur predite et le centre de masse de la tumeur dans le mask : 0.37459
+Similarite entre notre prediction et le mask = 0.70175
+
+</pre><pre class="codeoutput">K-Means :
+Distance entre le centre de masse de la tumeur predite et le centre de masse de la tumeur dans le mask : 0.37459
+Similarite entre notre prediction et le mask = 0.70175
+
+</pre><pre class="codeinput"><span class="keyword">end</span>
+</pre><h2 id="26">rognerImage</h2><pre class="codeinput"><span class="keyword">function</span> [imageRognee,indicesLignesNoires,indicesColonnesNoires] = rognerImage(image,seuilMax,n,p)
+
+    indicesLignesNoires = [];
+    <span class="keyword">for</span> i = 1:n
+        valeurs = unique(image(i,:));
+
+        <span class="keyword">if</span> ((valeurs&gt;=0) &amp; (valeurs&lt;seuilMax))
+            indicesLignesNoires = [indicesLignesNoires; i];
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+    indicesColonnesNoires = [];
+    <span class="keyword">for</span> i = 1:p
+        valeurs = unique(image(:,i));
+
+        <span class="keyword">if</span> (valeurs&gt;=0 &amp; valeurs&lt;seuilMax)
+            indicesColonnesNoires = [indicesColonnesNoires; i];
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+    image(indicesLignesNoires,:) = [];
+    image(:,indicesColonnesNoires) = [];
+    imageRognee = image;
+<span class="keyword">end</span>
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Postulat
+
+% Comme les mask114.png, mask121.png, mask129.png ne contiennent qu'une
+% seule tumeur, on suppose qu'on a qu'une seule tumeur a detecter par image
+
+%%
+clc
+close all
+clear
+image = [];
+
+%% Ajout du repertoire des donnees
+
+path=which('main.m');
+path=[path(1:(end-length('Code/main.m'))) 'Donnees/tumeur'];
+
+if ~exist(path, 'dir')
+    disp('Pour des raisons de confidentialite, les images medicales ne sont pas stockees en ligne.')
+    error('Creez le repertoire tumeur dans le repertoire Donnees et mettez les images dans le repertoire tumeur')
+end
+
+addpath(path)
+
+%% Image Originale
+
+nomImage = 'dcm114.png';
+
+image = im2double(imread(nomImage));
+[n,p,z] = size(image);
+
+disp(['Dimensions Image Originale : n=', num2str(n), ' p=', num2str(p), ' z=', num2str(z)])
+
+if (z>1)
+    image = rgb2gray(image);
+end
+
+i_subplot = 1;
+
+figure('Renderer','painters','Position',[10 10 1600 800])
+subplot(4,4,i_subplot)
+imagesc(image)
+title(['Image Originale ' nomImage])
+i_subplot = i_subplot+1;
+
+%% Mask : verite terrain
+
+nomMask = 'mask114.png';
+mask = im2double(imread(nomMask)); % verite terrain
+
+subplot(4,4,i_subplot)
+imagesc(mask)
+title(['Mask ' nomMask ' : verite terrain'])
+i_subplot = i_subplot+1;
+
+%% Histogramme 
+
+subplot(4,4,i_subplot)
+h=histogram(image);
+grid on
+title('Histogramme Image Originale')
+i_subplot = i_subplot+1;
+
+% On remarque que l'image originale contient enormement de pixels noirs
+% (arriere plan) qui peuvent fausser la determination automatique du seuil
+% pour le seuillage
+
+%% Pre-traitement : Filtrage Gaussien
+
+subplot(4,4,i_subplot)
+imageFiltrageGaussien = imgaussfilt(image);
+imagesc(image)
+title('Image Originale Apres filtrage gaussien')
+i_subplot = i_subplot+1;
+
+%% Determination du seuil avec Otsu
+
+seuilOtsuImageOriginale = graythresh(imageFiltrageGaussien)
+% la fonction graythresh de Matlab utilise la methode d'Otsu vue en TP pour
+% determiner le seuil de maniere automatique
+
+%% Segmentation (seuillage)
+
+imageSeuillee = imbinarize(imageFiltrageGaussien, seuilOtsuImageOriginale);
+
+subplot(4,4,i_subplot)
+imagesc(imageSeuillee)
+title(['Apres segmentation avec Otsu, s=' num2str(seuilOtsuImageOriginale)])
+i_subplot = i_subplot+1;
+
+% On remarque que la methode d'Otsu n'est pas satisfaisante dans notre cas
+% car le seuil est fausse par l'arriere plan noir. La tumeur et l'organe se
+% trouve alors dans la meme region et on ne pas les dissocier
+
+%% Image Rognee
+%% Rogner l'image originale (retirer les colonnes et les lignes qui ne 
+%% contiennent des valeurs entre 0 et 0.1)
+
+% Retirer les lignes et les colonnes qui ne contiennent que des 0 ne
+% suffisent pas pour avoir des resultats satisfaisants avec Otsu. C'est
+% pourquoi, on retire les lignes et les colonnes de l'image originale qui
+% ont des valeurs entre 0 et 0.1. On a choisi 0.1 de maniere empirique
+
+seuilMax = 0.1;
+[imageRognee,indicesLignesNoires,indicesColonnesNoires] = rognerImage(image,seuilMax,n,p);
+
+subplot(4,4,i_subplot)
+imagesc(imageRognee);
+title('Image Rognee')
+i_subplot = i_subplot+1;
+
+subplot(4,4,i_subplot)
+h=histogram(imageRognee);
+grid on
+title('Histogramme Image Rognee')
+i_subplot = i_subplot+1;
+
+%% Pre-traitement : Filtrage Gaussien
+
+imageRogneeFitlrageGaussien = imgaussfilt(imageRognee);
+
+subplot(4,4,i_subplot)
+imagesc(imageRogneeFitlrageGaussien)
+title('Image Rognee Apres filtrage gaussien')
+i_subplot = i_subplot+1;
+
+%% Determination du seuil avec Otsu
+
+seuilOtsuImageRognee = graythresh(imageRogneeFitlrageGaussien)
+
+% Le seuil trouve avec Otsu a partir de l'image rognee est tres different
+% de celui trouve a partir de l'image originale
+
+%% Segmentation (seuillage)
+
+imageRogneeSeuillee = imbinarize(imageRogneeFitlrageGaussien, seuilOtsuImageRognee);
+
+subplot(4,4,i_subplot)
+imagesc(imageRogneeSeuillee)
+title(['Apres segmentation avec Otsu, s=',num2str(seuilOtsuImageRognee)])
+i_subplot = i_subplot+1;
+
+% imageRogneeSeuillee n'a pas les memes dimensions que le mask (verite
+% terrain) donc on peut pas utiliser la fonction dice de Matlab directement
+% pour calculer la similitude.
+
+% Nous devons alors reconstruire l'imageSeuillee a partir de l'imageRogneeSeuillee
+
+%% Reconstruction
+
+resOtsu = ones(size(image));
+
+for j = 1:length(indicesColonnesNoires)
+    resOtsu(:,indicesColonnesNoires(j)) = 0;
+end
+
+for i = 1:length(indicesLignesNoires)
+    resOtsu(indicesLignesNoires(i),:) = 0;
+end
+
+resOtsu(resOtsu==1) = imageRogneeSeuillee;
+    
+i_subplot = afficherResultats(resOtsu,image,mask,'Otsu',i_subplot);
+
+%% K-Means
+
+K = 3; % nombre de clusters
+% 3 clusters : arriere plan, organe, tumeur
+
+resKmeans = reshape(kmeans(imageFiltrageGaussien(:),K),size(imageFiltrageGaussien));
+
+subplot(4,4,i_subplot)
+imagesc(resKmeans)
+title(['K-Means, K=' num2str(K)])
+i_subplot = i_subplot+1;
+
+i_subplot = afficherResultats(resKmeans,image,mask,'K-Means',i_subplot);
+
+%% Interpretation des resultats
+
+% Otsu ne donne pas de bons resultats avec l'image originale car l'arriere
+% plan contient trop de pixels noirs
+
+% Une fois qu'on a rogne l'image (retire les pixels entre 0 et 0.1 :
+% pixels noirs, fonces), Otsu donne de bons resultats.
+
+% La methode de K-Means donne de bons resultats sur l'image originale.
+
+% Les methodes d'Otsu sur l'image rognee et K-Means sur l'image originale
+% donnent les memes valeurs de similitudes pour dcm114.png (0.70175) et dcm121.png (0.8046).
+% Pour dcm129.png, :
+% - parfois K-Means donne une similitude de 0.81818, un peu plus elevee qu'Otsu (0.80597)
+% - parfois K-Means donne la meme similitude qu'Otsu (0.80597)
+% Ces similitudes qui changent pour dcm129.png sont dues a l'initialisation
+% des centres qui peut changer dans l'algorithme de K-Means 
+
+% Ces similitudes sont proches de 1 donc ce sont de bons resultats.
+
+% Quelle que soit la methode, quelle que soit l'image, le centre de masse
+% de la tumeur predite et du mask ne sont pas les memes.
+
+% Limites du projet
+% Notre projet fonctionne sur les 3 images qui nous ont ete donnees mais il
+% pourrait ne pas fonctionner sur d'autres images
+
+
+%% Fonctions
+
+%% afficherResultats
+
+function [i_subplot] = afficherResultats(res,image,mask,methode,i_subplot)
+    %% Recuperation de la tumeur
+
+    % Combien y a-t-il de clusters ?
+    modaliteClusters = unique(res)';
+
+    % Combien y a-t-il de pixels dans chaque cluster ?
+    tailleClusters = zeros(length(modaliteClusters),1);
+    indice=1;
+    for i = modaliteClusters
+        tailleClusters(indice) = length(res(res==i));
+        indice = indice+1;
+    end
+
+    % Quel cluster est le plus petit (ce cluster correspond alors a la tumeur)
+    [~, indiceTailleClusterMin] = min(tailleClusters);
+
+    %% Isoler la tumeur
+
+    indicesTumeur = find(res==modaliteClusters(indiceTailleClusterMin));
+    imageBinarisee = zeros(size(image));
+    imageBinarisee(indicesTumeur) = 1;
+    
+    subplot(4,4,i_subplot)
+    imagesc(imageBinarisee)
+    title(['Isoler la tumeur, methode : ' methode])
+    i_subplot = i_subplot+1;
+    
+    subplot(4,4,i_subplot)
+    imagesc(image)
+    hold on
+    title(['Localiser la tumeur, methode : ' methode])
+    i_subplot = i_subplot+1;
+
+    %% Localiser la tumeur dans l'image originale
+
+    s_predit = regionprops(bwlabel(imageBinarisee)); % determine entre autres le centre de masse de la tumeur predite
+
+    rectangle('Position',s_predit.BoundingBox,'EdgeColor', 'r','LineWidth', 3)
+    hold off
+
+    %% Distance entre la tumeur dectectee et le masque
+    
+    disp([methode ' :'])
+    
+    s_mask = regionprops(bwlabel(mask)); % determine entre autres le centre de masse de la tumeur du mask
+    distance_s_predit_s_mask = norm(s_predit.Centroid-s_mask.Centroid,2); % norme 2
+    disp(['Distance entre le centre de masse de la tumeur predite et le centre de masse de la tumeur dans le mask : ' num2str(distance_s_predit_s_mask)])
+    
+    similarite = dice(imageBinarisee, mask); % quantifie la similarite entre deux images
+    disp(['Similarite entre notre prediction et le mask = ' num2str(similarite) ])
+    fprintf('\n')
+    
+end
+
+%% rognerImage
+
+function [imageRognee,indicesLignesNoires,indicesColonnesNoires] = rognerImage(image,seuilMax,n,p)
+    
+    indicesLignesNoires = [];
+    for i = 1:n
+        valeurs = unique(image(i,:));
+
+        if ((valeurs>=0) & (valeurs<seuilMax))
+            indicesLignesNoires = [indicesLignesNoires; i];
+        end
+    end
+
+    indicesColonnesNoires = [];
+    for i = 1:p
+        valeurs = unique(image(:,i));
+
+        if (valeurs>=0 & valeurs<seuilMax)
+            indicesColonnesNoires = [indicesColonnesNoires; i];
+        end
+    end
+
+    image(indicesLignesNoires,:) = [];
+    image(:,indicesColonnesNoires) = [];
+    imageRognee = image;
+end
+##### SOURCE END #####
+--></body></html>
